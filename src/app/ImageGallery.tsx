@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { CircularProgress, Box, Pagination } from '@mui/material';
 import Link from "next/link";
+import { useRouter, useSearchParams } from 'next/navigation';;
 
 
 interface ImageData {
@@ -17,10 +18,30 @@ const ImageGallery = () => {
     const [images, setImages] = useState<ImageData[]>([]);
     const [loading, setLoading] = useState(true);
     const [isClient, setIsClient] = useState(false);
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(10); // Adjust as needed
-    const IMAGES_PER_PAGE = 9; // Number of images per page
+    
+    const getStoredPage = () => {
+        if (typeof window !== "undefined") {
+            const urlPage = Number(searchParams.get("page"));
+            const storedPage = Number(localStorage.getItem("imageGalleryPage"));
+            return urlPage || storedPage || 1;
+        } else return 1;
+    };
+
+    // const currentPage = Number(searchParams.get("page")) || 1;
+    const [page, setPage] = useState(getStoredPage());
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem("imageGalleryPage", page.toString());
+        }
+    }, [page]);
+
+    const [totalPages, setTotalPages] = useState(10);
+    const IMAGES_PER_PAGE = 9;
+
 
     const fetchImages = async (pageNumber: number) => {
         setIsClient(true);
@@ -36,6 +57,11 @@ const ImageGallery = () => {
     }
 
     useEffect(() => { fetchImages(page) }, [page]);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+        router.push(`?page=${value}`, { scroll: false }); // Update URL without full reload
+    };
 
     if (!isClient) { return null }
 
@@ -53,7 +79,7 @@ const ImageGallery = () => {
                             <Pagination
                                 count={totalPages} // Set total pages dynamically if available
                                 page={page}
-                                onChange={(event, value) => setPage(value)}
+                                onChange={handlePageChange}
                                 color="primary"
                             />
                         </Box>
@@ -81,7 +107,7 @@ const ImageGallery = () => {
                             <Pagination
                                 count={totalPages}
                                 page={page}
-                                onChange={(event, value) => setPage(value)}
+                                onChange={handlePageChange}
                                 color="primary"
                             />
                         </Box>
