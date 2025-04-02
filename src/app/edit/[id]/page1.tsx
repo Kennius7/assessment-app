@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -13,7 +12,6 @@ import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import EditSection from "./editSection";
-import ModalBox from "@/app/modal";
 
 // const Stage = dynamic(() => import("react-konva").then((mod) => mod.Stage), { ssr: false });
 // const Layer = dynamic(() => import("react-konva").then((mod) => mod.Layer), { ssr: false });
@@ -36,13 +34,6 @@ const ImageEdit = () => {
     const [selected, setSelected] = useState(false);
     const { id } = useParams();
     const router = useRouter();
-
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [scale, setScale] = useState(1);
-    const [angle, setAngle] = useState(0);
-    const [mouseStart, setMouseStart] = useState({ x: 0, y: 0 });
 
     const imageRef = useRef<Konva.Image>(null);
     const transformerRef = useRef<Konva.Transformer>(null);
@@ -97,52 +88,6 @@ const ImageEdit = () => {
     }, [id, grayscale, blur]);
 
     useEffect(() => {
-        if (!image || !canvasRef.current) return;
-
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        canvas.width = 500;
-        canvas.height = 300;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(position.x + image.width / 2, position.y + image.height / 2);
-        ctx.rotate(angle * (Math.PI / 180));
-        ctx.scale(scale, scale);
-        ctx.drawImage(image, -image.width / 2, -image.height / 2);
-        ctx.restore();
-    }, [image, position, scale, angle]);
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        setIsDragging(true);
-        setMouseStart({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (!isDragging) return;
-
-        setPosition(prev => ({
-            x: prev.x + (e.clientX - mouseStart.x),
-            y: prev.y + (e.clientY - mouseStart.y),
-        }));
-        setMouseStart({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
-
-    const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setScale(parseFloat(event.target.value));
-    };
-
-    const handleRotateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAngle(parseFloat(event.target.value));
-    };
-
-    useEffect(() => {
         if (selected && imageRef.current && transformerRef.current) {
             transformerRef.current.nodes([imageRef.current]);
             transformerRef?.current?.getLayer()?.batchDraw();
@@ -190,58 +135,58 @@ const ImageEdit = () => {
         }, 500);
     };
 
-    // const handleTransformEnd = (e: KonvaEventObject<Event>) => {
-    //     // const node = e.target;
-    //     const node = e.target as Konva.Node;
+    const handleTransformEnd = (e: KonvaEventObject<Event>) => {
+        // const node = e.target;
+        const node = e.target as Konva.Node;
 
-    //     setDimensions({
-    //         width: node.width() * node.scaleX(),
-    //         height: node.height() * node.scaleY(),
-    //     });
-    //     node.scaleX(1);
-    //     node.scaleY(1);
-    // }
+        setDimensions({
+            width: node.width() * node.scaleX(),
+            height: node.height() * node.scaleY(),
+        });
+        node.scaleX(1);
+        node.scaleY(1);
+    }
 
-    // const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
-    //     // const node = e.target;
-    //     const node = e.target as Konva.Node;
-    //     setImagePosition({
-    //         x: node.x(),
-    //         y: node.y(),
-    //     });
-    // };
+    const handleDragMove = (e: KonvaEventObject<DragEvent>) => {
+        // const node = e.target;
+        const node = e.target as Konva.Node;
+        setImagePosition({
+            x: node.x(),
+            y: node.y(),
+        });
+    };
     
-    // const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
-    //     // const node = e.target;
-    //     const node = e.target as Konva.Node;
-    //     setImagePosition({
-    //         x: node.x(),
-    //         y: node.y(),
-    //     });
-    // };
+    const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
+        // const node = e.target;
+        const node = e.target as Konva.Node;
+        setImagePosition({
+            x: node.x(),
+            y: node.y(),
+        });
+    };
     
     const handleEdit = () => { setOpen(true) };
     const handleClose = () => { setOpen(false) };
 
-    // const modalStyle = {
-    //     position: "absolute",
-    //     top: "50%",
-    //     left: "50%",
-    //     transform: "translate(-50%, -50%)",
-    //     // bgcolor: "background.paper",
-    //     bgcolor: "#bbb",
-    //     border: "2px solid #000",
-    //     borderRadius: 2,
-    //     boxShadow: 24,
-    //     p: 4,
-    //     width: modalWidth,
-    //     height: "80%",
-    //     maxWidth: 800,
-    //     display: "flex", 
-    //     flexDirection: "column", 
-    //     justifyContent: "center", 
-    //     alignItems: "center",
-    // };
+    const modalStyle = {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        // bgcolor: "background.paper",
+        bgcolor: "#bbb",
+        border: "2px solid #000",
+        borderRadius: 2,
+        boxShadow: 24,
+        p: 4,
+        width: modalWidth,
+        height: "80%",
+        maxWidth: 800,
+        display: "flex", 
+        flexDirection: "column", 
+        justifyContent: "center", 
+        alignItems: "center",
+    };
 
 
     return (
@@ -275,21 +220,11 @@ const ImageEdit = () => {
                                 <CircularProgress />
                             </Container>
                         ) : (
-                            <div>
-                                {/* <CardMedia 
-                                    component="img"
-                                    image={image?.src || ""}
-                                    sx={{ width: dimensions.width, height: dimensions.height }} 
-                                /> */}
-                                <canvas 
-                                    ref={canvasRef}
-                                    onMouseDown={handleMouseDown}
-                                    onMouseMove={handleMouseMove}
-                                    onMouseUp={handleMouseUp}
-                                    onMouseLeave={handleMouseUp}
-                                    className="border cursor-pointer"
-                                />
-                            </div>
+                            <CardMedia 
+                                component="img"
+                                image={image?.src || ""}
+                                sx={{ width: dimensions.width, height: dimensions.height }} 
+                            />
                         )
                     }
                 </Card>
@@ -317,25 +252,10 @@ const ImageEdit = () => {
 
 
 
-            <ModalBox 
-                open={open} 
-                onClose={handleClose}
-                // stageRef={stageRef}
-                // handleSave={handleSave}
-                modalWidth={modalWidth}
-                settingHeight={dimensions.height}
-                settingWidth={dimensions.width}
-                setGrayscale={setGrayscale}
-                grayscale={grayscale}
-                setBlur={setBlur}
-                blur={blur}
-                setDimensions={setDimensions}
-                dimensions={dimensions}
-                handleEditedImageDownload={handleEditedImageDownload}
-            />
+
 
             {/* Modal for Editing Image */}
-            {/* <Modal open={open} onClose={handleClose}>
+            <Modal open={open} onClose={handleClose}>
                 <Box sx={modalStyle}>
                     <Typography variant="h6" component="h2" gutterBottom>
                         Edit Image
@@ -360,6 +280,14 @@ const ImageEdit = () => {
                             <Layer>
                                 {image && (
                                     <>
+                                        {/* <Rect 
+                                            x={imagePosition.x} 
+                                            y={imagePosition.y} 
+                                            width={dimensions.width} 
+                                            height={dimensions.height} 
+                                            stroke="red" 
+                                            strokeWidth={10} 
+                                        /> */}
                                         <KonvaImage
                                             ref={imageRef}
                                             image={image}
@@ -409,7 +337,7 @@ const ImageEdit = () => {
                         </Button>
                     </Box>
                 </Box>
-            </Modal> */}
+            </Modal>
         </div>
     );
 };
