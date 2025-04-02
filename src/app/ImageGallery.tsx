@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -40,7 +41,7 @@ const ImageGallery = () => {
     }, [page]);
 
     const [totalPages, setTotalPages] = useState(10);
-    const IMAGES_PER_PAGE = 9;
+    const IMAGES_PER_PAGE = window.innerWidth > 500 ? 9 : 8;
 
 
     const fetchImages = async (pageNumber: number) => {
@@ -83,7 +84,7 @@ const ImageGallery = () => {
                                 color="primary"
                             />
                         </Box>
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-3">
                             {
                                 images.length > 0 &&
                                     images.map(({id, download_url, author}) => (
@@ -94,10 +95,13 @@ const ImageGallery = () => {
                                                     alt={`Image ${author}`} 
                                                     width={400}
                                                     height={300}
-                                                    className="rounded-sm shadow-md object-cover w-[500px] h-[300px]" 
+                                                    className="rounded-[7px] shadow-md object-cover 
+                                                    sm:w-[500px] sm:h-[300px] w-[150px] h-[120px]" 
                                                 />
                                             </Link>
-                                            <div>Author&apos;s Name: <span className="italic">{author}</span></div>
+                                            <div className="sm:text-[16px] text-[14px] mt-1 italic">
+                                                {author}
+                                            </div>
                                         </div>
                                     ))
                             }
