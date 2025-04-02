@@ -9,10 +9,10 @@ import { useRouter } from 'next/navigation';;
 import axios from "axios";
 import { Container, CircularProgress, Typography, CardMedia, Card, Box, Button, Modal } from '@mui/material';
 // import dynamic from 'next/dynamic';
-import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
-import Konva from "konva";
-import { KonvaEventObject } from "konva/lib/Node";
-import EditSection from "./editSection";
+// import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
+// import Konva from "konva";
+// import { KonvaEventObject } from "konva/lib/Node";
+// import EditSection from "./editSection";
 import ModalBox from "@/app/modal";
 
 // const Stage = dynamic(() => import("react-konva").then((mod) => mod.Stage), { ssr: false });
@@ -44,8 +44,8 @@ const ImageEdit = () => {
     const [angle, setAngle] = useState(0);
     const [mouseStart, setMouseStart] = useState({ x: 0, y: 0 });
 
-    const imageRef = useRef<Konva.Image>(null);
-    const transformerRef = useRef<Konva.Transformer>(null);
+    // const imageRef = useRef<Konva.Image>(null);
+    // const transformerRef = useRef<Konva.Transformer>(null);
     const stageRef = useRef<any>(null);
     const [open, setOpen] = useState(false);
     const [modalWidth, setModalWidth] = useState(0);
@@ -142,12 +142,12 @@ const ImageEdit = () => {
         setAngle(parseFloat(event.target.value));
     };
 
-    useEffect(() => {
-        if (selected && imageRef.current && transformerRef.current) {
-            transformerRef.current.nodes([imageRef.current]);
-            transformerRef?.current?.getLayer()?.batchDraw();
-        }
-    }, [selected]);
+    // useEffect(() => {
+    //     if (selected && imageRef.current && transformerRef.current) {
+    //         transformerRef.current.nodes([imageRef.current]);
+    //         transformerRef?.current?.getLayer()?.batchDraw();
+    //     }
+    // }, [selected]);
 
     const handleImageDownload = async () => {
         if (!image?.src) {
