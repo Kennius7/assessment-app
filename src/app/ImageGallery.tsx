@@ -60,7 +60,7 @@ const ImageGallery = () => {
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value);
-        router.push(`?page=${value}`, { scroll: false }); // Update URL without full reload
+        router.push(`?page=${value}`, { scroll: false });
     };
 
     if (!isClient) { return null }
@@ -77,7 +77,7 @@ const ImageGallery = () => {
                         {/* Pagination Controls */}
                         <Box display="flex" justifyContent="center" mb={4}>
                             <Pagination
-                                count={totalPages} // Set total pages dynamically if available
+                                count={totalPages}
                                 page={page}
                                 onChange={handlePageChange}
                                 color="primary"
