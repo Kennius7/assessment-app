@@ -1,7 +1,8 @@
 "use client";
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Typography, CircularProgress } from '@mui/material';
 import ImageGallery from './ImageGallery';
+import { Suspense } from 'react'
 
 
 const Home: React.FC = () => {
@@ -13,7 +14,9 @@ const Home: React.FC = () => {
       </Typography>
 
       <div className='w-full p-4'>
-        <ImageGallery />
+        <Suspense fallback={<CircularProgress/>}>
+          <ImageGallery />
+        </Suspense>
       </div>
     </div>
   );

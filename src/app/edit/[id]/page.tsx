@@ -7,16 +7,16 @@ import { useParams } from "next/navigation";
 import { useRouter } from 'next/navigation';;
 import axios from "axios";
 import { Container, CircularProgress, Typography, CardMedia, Card, Box, Button, Modal } from '@mui/material';
-import dynamic from 'next/dynamic';
-// import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
+// import dynamic from 'next/dynamic';
+import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import EditSection from "./editSection";
 
-const Stage = dynamic(() => import("react-konva").then((mod) => mod.Stage), { ssr: false });
-const Layer = dynamic(() => import("react-konva").then((mod) => mod.Layer), { ssr: false });
-const Transformer = dynamic(() => import("react-konva").then((mod) => mod.Transformer), { ssr: false });
-const KonvaImage = dynamic(() => import("react-konva").then((mod) => mod.Image), { ssr: false });
+// const Stage = dynamic(() => import("react-konva").then((mod) => mod.Stage), { ssr: false });
+// const Layer = dynamic(() => import("react-konva").then((mod) => mod.Layer), { ssr: false });
+// const Transformer = dynamic(() => import("react-konva").then((mod) => mod.Transformer), { ssr: false });
+// const KonvaImage = dynamic(() => import("react-konva").then((mod) => mod.Image), { ssr: false });
 
 
 // interface ImageData {

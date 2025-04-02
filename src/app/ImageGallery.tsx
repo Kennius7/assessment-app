@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import { CircularProgress, Box, Pagination } from '@mui/material';
 import Link from "next/link";
@@ -93,21 +93,23 @@ const ImageGallery = () => {
                             {
                                 images.length > 0 &&
                                     images.map(({id, download_url, author}) => (
-                                        <div key={id} className="cursor-pointer">
-                                            <Link href={`/edit/${id}`} passHref>
-                                                <Image 
-                                                    src={download_url} 
-                                                    alt={`Image ${author}`} 
-                                                    width={400}
-                                                    height={300}
-                                                    className="rounded-[7px] shadow-md object-cover 
-                                                    sm:w-[500px] sm:h-[300px] w-[150px] h-[120px]" 
-                                                />
-                                            </Link>
-                                            <div className="sm:text-[16px] text-[14px] mt-1 italic">
-                                                {author}
+                                        <Suspense key={id} fallback={<CircularProgress size={"2rem"} />}>
+                                            <div className="cursor-pointer">
+                                                <Link href={`/edit/${id}`} passHref>
+                                                        <Image 
+                                                            src={download_url} 
+                                                            alt={`Image ${author}`} 
+                                                            width={400}
+                                                            height={300}
+                                                            className="rounded-[7px] shadow-md object-cover 
+                                                            sm:w-[500px] sm:h-[300px] w-[150px] h-[120px]" 
+                                                        />
+                                                </Link>
+                                                <div className="sm:text-[16px] text-[14px] mt-1 italic">
+                                                    {author}
+                                                </div>
                                             </div>
-                                        </div>
+                                        </Suspense>
                                     ))
                             }
                         </div>
