@@ -39,10 +39,31 @@ const ImageEdit = () => {
     const transformerRef = useRef<Konva.Transformer>(null);
     const stageRef = useRef<any>(null);
     const [open, setOpen] = useState(false);
+    const [modalWidth, setModalWidth] = useState(0);
+    const [grayscale, setGrayscale] = useState(false);
+    const [blur, setBlur] = useState(0);
+    // const [resolvedURL, setResolvedURL] = useState("");
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setModalWidth(window.innerWidth > 500 ? (dimensions.width * 2) : (dimensions.width * 1.4));
+        }
+    }, [])
 
     const fetchImage = async () => {
+        const imageURL = `https://picsum.photos/id/${id}`;
+        const widthURL = dimensions.width;
+        const heightURL = dimensions.height;
+        const grayscaleURL = grayscale ? "?grayscale" : "";
+        // const ampersand = grayscale && blur ? "&" : "";
+        const blurURL = blur > 0 && !grayscale ? `?blur=${blur}` : blur > 0 && grayscale ? `&blur=${blur}` : "";
+        // setResolvedURL(`${imageURL}/${widthURL}/${heightURL}${grayscaleURL}${ampersand}${blurURL}`);
+        const resolvedURL = `${imageURL}/${widthURL}/${heightURL}${grayscaleURL}${blurURL}`;
+        console.log("Image:>>>>>>", image, "Resolved URL:>>>>>>", resolvedURL);
+
         try {
-            const res = await axios.get(`https://picsum.photos/id/${id}/500/300`);
+            const res = await axios.get(resolvedURL);
+            console.log("Response:>>>>>>", res, "Image:>>>>>>", image, "Resolved URL:>>>>>>", resolvedURL);
             const img = new window.Image();
             img.crossOrigin = "anonymous";
             img.src = res.request.responseURL;
@@ -59,9 +80,12 @@ const ImageEdit = () => {
     };
 
     useEffect(() => { 
+        console.log("About to fetch image...");
         if (!id) return;
+        console.log("Fetching image:>>>>>>", id);
         fetchImage() 
-    }, [id]);
+        console.log("Image fetched...");
+    }, [id, grayscale, blur]);
 
     useEffect(() => {
         if (selected && imageRef.current && transformerRef.current) {
@@ -143,6 +167,26 @@ const ImageEdit = () => {
     
     const handleEdit = () => { setOpen(true) };
     const handleClose = () => { setOpen(false) };
+
+    const modalStyle = {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        // bgcolor: "background.paper",
+        bgcolor: "#bbb",
+        border: "2px solid #000",
+        borderRadius: 2,
+        boxShadow: 24,
+        p: 4,
+        width: modalWidth,
+        height: "80%",
+        maxWidth: 800,
+        display: "flex", 
+        flexDirection: "column", 
+        justifyContent: "center", 
+        alignItems: "center",
+    };
 
 
     return (
@@ -269,7 +313,16 @@ const ImageEdit = () => {
                                 )}
                             </Layer>
                         </Stage>
-                        <EditSection />
+                        <EditSection 
+                            settingHeight={dimensions.height} 
+                            settingWidth={dimensions.width} 
+                            setGrayscale={setGrayscale}
+                            grayscale={grayscale}
+                            setBlur={setBlur}
+                            blur={blur}
+                            setDimensions={setDimensions}
+                            dimensions={dimensions}
+                        />
                     </Container>
 
                     <Box 
@@ -293,26 +346,6 @@ const ImageEdit = () => {
             </Modal>
         </div>
     );
-};
-
-const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    // bgcolor: "background.paper",
-    bgcolor: "#bbb",
-    border: "2px solid #000",
-    borderRadius: 2,
-    boxShadow: 24,
-    p: 4,
-    width: "80%",
-    height: "80%",
-    maxWidth: 800,
-    display: "flex", 
-    flexDirection: "column", 
-    justifyContent: "center", 
-    alignItems: "center",
 };
 
 export default ImageEdit;
