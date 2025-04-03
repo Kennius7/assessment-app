@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   return (
     <div className='w-full flex flex-col items-center'>
       <Typography variant="h4" component="h1" mt={2} gutterBottom>
-        Gallery
+        Image Gallery
       </Typography>
 
       <div className='w-full sm:p-4 p-2'>

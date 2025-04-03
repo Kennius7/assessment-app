@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import { Switch, Box } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Switch } from '@mui/material';
 
 
 export default function ImageEditor({
-    settingHeight, settingWidth, setGrayscale, grayscale, setBlur, blur, 
-    setDimensions, dimensions, image, setScale, scale, setAngle, angle, canvasRef
+    setGrayscale, grayscale, setBlur, blur, setDimensions, dimensions, 
+    image, setScale, scale, setAngle, angle, canvasRef
 }: {
-        settingHeight: number, 
-        settingWidth: number, 
         setGrayscale: (value: boolean) => void, 
         grayscale: boolean,
         setBlur: (value: number) => void, 
@@ -27,10 +24,10 @@ export default function ImageEditor({
     }) {
 
     // const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
+    // const [isDragging, setIsDragging] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [width, setWidth] = useState(300);
-    const [height, setHeight] = useState(200);
+    // const [width, setWidth] = useState(300);
+    // const [height, setHeight] = useState(200);
     // const [scale, setScale] = useState(1);
     // const [angle, setAngle] = useState(0);
 
@@ -79,23 +76,20 @@ export default function ImageEditor({
 
 
     return (
-        <div 
-            style={{ 
-                height: window.innerWidth > 500 ? settingHeight : "280px", 
-                width: window.innerWidth > 500 ? settingWidth/2 : "98%",
-            }} 
-            className="flex flex-col items-center sm:p-4 p-3 bg-gray-100 rounded-lg shadow-lg sm:m-2 m-1"
-        >
-            <h2 className="sm:text-xl text-[16px] font-bold sm:mb-4 mb-2">
-                Image Settings
-            </h2>
-            <div className="w-full sm:mb-4 mb-0 flex justify-between items-center">
-                <label className="text-sm font-semibold">
+        <div className="sm:w-[280px] w-[98%] sm:h-[350px] h-[280px] flex flex-col 
+            items-center sm:p-4 p-3 bg-gray-100 rounded-lg shadow-lg sm:m-2 m-1">
+            <div className='w-full flex justify-start items-center'>
+                <h2 className="sm:text-[18px] text-[16px] font-semibold sm:mb-3 mb-2 text-start">
+                    Image Settings
+                </h2>
+            </div>
+            <div className="w-full sm:mb-2 mb-0 flex justify-between items-center">
+                <label className="text-sm sm:font-semibold font-normal">
                     Grayscale
                 </label>
                 <Switch checked={grayscale} onChange={handleGrayscaleToggle} />
             </div>
-            <div className="sm:mb-4 mb-0 w-full">
+            <div className="sm:mb-4 mb-0 w-full flex flex-col justify-center items-start">
                 <label className="block text-sm font-semibold mb-2">
                     Blur: {blur}
                 </label>
@@ -119,7 +113,7 @@ export default function ImageEditor({
                     className="border px-2 py-1 sm:w-16 w-10 rounded-md text-[12px]"
                 />
             </div>
-            <div className='w-full flex justify-between items-center'>
+            <div className='w-full flex justify-between items-center sm:mb-3 mb-0'>
                 <label className="block text-sm font-semibold">
                     Height:
                 </label>
@@ -130,7 +124,7 @@ export default function ImageEditor({
                     className="border px-2 py-1 sm:w-16 w-10 rounded-md text-[12px]"
                 />
             </div>
-            <div className='w-full'>
+            <div className='w-full flex flex-col justify-center items-start sm:mb-3 mb-0'>
                 <label className="block text-sm font-semibold sm:mb-2 mb-0">
                     Scale: {scale.toFixed(2)}
                 </label>
@@ -140,7 +134,7 @@ export default function ImageEditor({
                     className="w-full"
                 />
             </div>
-            <div className='w-full'>
+            <div className='w-full flex flex-col justify-center items-start'>
                 <label className="block text-sm font-semibold sm:mb-2 mb-0">
                     Rotate: {angle}°
                 </label>

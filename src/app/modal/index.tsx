@@ -6,16 +6,11 @@ import EditSection from "../edit/[id]/editSection";
 import { ParamValue } from 'next/dist/server/request/params';
 
 
-const ModalBox = ({ 
-    open, onClose, settingHeight, settingWidth, setGrayscale, grayscale, 
-    setBlur, blur, setDimensions, dimensions, image, id,
-}: {
+const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDimensions, dimensions, image, id }: {
     open: boolean,
     onClose: () => void,
     dimensions: { width: number, height: number },
     setDimensions: ({ width, height }: { width: number, height: number }) => void,
-    settingHeight: number,
-    settingWidth: number,
     setGrayscale: (value: boolean) => void, 
     grayscale: boolean,
     setBlur: (value: number) => void, 
@@ -67,23 +62,86 @@ const ModalBox = ({
         }, 500);    
     };
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+
+    //?============================================================================================>>
+
+    // const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    //     setIsDragging(true);
+    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
+    //     document.addEventListener("mousemove", handleGlobalMouseMove);
+    //     document.addEventListener("mouseup", handleGlobalMouseUp);
+    // };
+
+    // const handleGlobalMouseDown = (e: MouseEvent) => {
+    //     setIsDragging(true);
+    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
+    //     document.addEventListener("mousemove", handleMouseMove);
+    //     document.addEventListener("mouseup", handleMouseUp);
+    // };
+
+    // const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    //     if (!isDragging) return;
+        
+    //     setPosition(prev => ({
+    //         x: prev.x + (mouseStartRef.current.x - e.clientX),
+    //         y: prev.y + (mouseStartRef.current.y - e.clientY),
+    //     }));
+    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
+    //     console.log("Position:>>>>", position);
+    // };
+
+    // const handleGlobalMouseMove = (e: MouseEvent) => {
+    //     if (!isDragging) return;
+        
+    //     setPosition(prev => ({
+    //         x: prev.x + (mouseStartRef.current.x - e.clientX),
+    //         y: prev.y + (mouseStartRef.current.y - e.clientY),
+    //     }));
+    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
+    //     console.log("Position:>>>>", position);
+    // };
+
+    // const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => { 
+    //     setIsDragging(false);
+    //     document.removeEventListener("mousemove", handleMouseMove);
+    //     document.removeEventListener("mouseup", handleMouseUp);
+    // };
+
+    // const handleGlobalMouseUp = () => { 
+    //     setIsDragging(false);
+    //     document.removeEventListener("mousemove", handleGlobalMouseMove);
+    //     document.removeEventListener("mouseup", handleGlobalMouseUp);
+    // };
+
+    //?============================================================================================>>
+
+    const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
         setIsDragging(true);
         mouseStartRef.current = { x: e.clientX, y: e.clientY };
+        // document.addEventListener("mousemove", handleMouseMove);
+        // document.addEventListener("mouseup", handleMouseUp);
     };
 
-    const handleMouseMove = (e: React.MouseEvent) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
         if (!isDragging) return;
-
+        
         setPosition(prev => ({
-            x: prev.x + (e.clientX - mouseStartRef.current.x),
-            y: prev.y + (e.clientY - mouseStartRef.current.y),
+            x: prev.x + (mouseStartRef.current.x - e.clientX),
+            y: prev.y + (mouseStartRef.current.y - e.clientY),
         }));
         mouseStartRef.current = { x: e.clientX, y: e.clientY };
         console.log("Position:>>>>", position);
     };
 
-    const handleMouseUp = () => { setIsDragging(false) };
+    const handleMouseUp = () => { 
+        setIsDragging(false);
+        // document.removeEventListener("mousemove", handleMouseMove);
+        // document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+
+
+    //?============================================================================================>>
 
     const handleTouchStart = (e: React.TouchEvent) => {
         setIsDragging(true);
@@ -96,8 +154,8 @@ const ModalBox = ({
         const touch = e.touches[0];
     
         setPosition(prev => ({
-            x: prev.x + (touch.clientX - mouseStartRef.current.x),
-            y: prev.y + (touch.clientY - mouseStartRef.current.y),
+            x: prev.x + (mouseStartRef.current.x - touch.clientX),
+            y: prev.y + (mouseStartRef.current.y - touch.clientY),
         }));
         mouseStartRef.current = { x: touch.clientX, y: touch.clientY };
         console.log("Position:>>>>", position);
@@ -111,9 +169,9 @@ const ModalBox = ({
         <Modal open={open} onClose={onClose}>
             <div 
                 style={{ transform: "translate(-50%, -50%)" }} 
-                className='absolute top-[50%] left-[50%] sm:w-[600px] w-[98%] sm:h-[80%] h-fit 
-                flex flex-col justify-center items-center bg-slate-200 rounded-[3px] 
-                border-slate-700 border-[2px] sm:p-4 p-2'
+                className='absolute top-[50%] left-[50%] sm:w-[700px] w-[98%] sm:h-[80%] h-fit 
+                flex flex-col justify-center items-center bg-slate-200 border-slate-700 
+                border-[2px] sm:p-6 p-2 sm:rounded-[6px] rounded-[2px]'
             >
                 <div className='w-full flex justify-start items-center'>
                     <div className='sm:text-[20px] text-[18px] font-semibold text-start ml-2'>
@@ -122,9 +180,9 @@ const ModalBox = ({
                 </div>
     
                 <div className='w-full h-full flex sm:flex-row flex-col sm:justify-between 
-                    justify-center items-center m-1'>
-                    <div className='sm:w-full w-[98%] sm:h-full h-[200px] flex justify-center 
-                        items-center overflow-hidden border-2 border-slate-800'>
+                    justify-around items-center m-1'>
+                    <div className='sm:w-[360px] w-[98%] sm:h-[350px] h-[200px] flex justify-center 
+                        items-center overflow-hidden border-1 border-slate-800'>
                         <canvas 
                             ref={canvasRef}
                             onMouseDown={handleMouseDown}
@@ -138,8 +196,6 @@ const ModalBox = ({
                         />
                     </div>
                     <EditSection 
-                        settingHeight={settingHeight} 
-                        settingWidth={settingWidth} 
                         setGrayscale={setGrayscale}
                         grayscale={grayscale}
                         setBlur={setBlur}

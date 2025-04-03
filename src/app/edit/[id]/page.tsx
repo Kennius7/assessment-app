@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from "next/navigation";
 import { useRouter } from 'next/navigation';;
 import axios from "axios";
-import { Container, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import ModalBox from "@/app/modal";
 import Image from "next/image";
 
@@ -87,8 +87,8 @@ const ImageEdit = () => {
 
 
     return (
-        <div className="w-full h-[100dvh] flex flex-col justify-start items-center sm:py-[100px] py-[10px]">
-            <div className='w-[78%] flex justify-start items-center mb-[100px]'>
+        <div className="w-full h-[100dvh] flex flex-col justify-start items-center sm:py-[30px] py-[10px]">
+            <div className='sm:w-[95%] w-[78%] flex justify-start items-center sm:mb-[60px] mb-[100px]'>
                 <button
                     className="bg-purple-700 text-white sm:px-8 px-4 py-2 rounded sm:w-[140px] w-[100px] 
                     cursor-pointer sm:text-[14px] text-[12px]"
@@ -103,30 +103,28 @@ const ImageEdit = () => {
                 </div>
             </div>
             <div className='w-full flex justify-center items-center sm:p-0 p-2'>
-                {
-                    loading ? (
-                        <Container 
-                            sx={{ 
-                                display: "flex", 
-                                justifyContent: "center", 
-                                alignItems: "center", 
-                                width: "100%",
-                                height: "100%" 
-                            }}
-                        >
-                            <CircularProgress />
-                        </Container>
-                    ) : (
-                        <div className='w-full h-full flex justify-center items-center overflow-hidden'>
+                <div className='w-full h-full flex justify-center items-center overflow-hidden'>
+                    {
+                        !loading && image?.src ? 
+                        (
                             <Image 
-                                src={image!.src}
+                                src={image?.src}
                                 alt="Image" 
                                 width={dimensions.width} 
                                 height={dimensions.height} 
                             />
-                        </div>
-                    )
-                }
+                        ) 
+                        : 
+                        (
+                            <div 
+                                style={{ width: dimensions.width, height: dimensions.height }} 
+                                className='flex justify-center items-center bg-slate-300'
+                            >
+                                <CircularProgress size={"4rem"} />
+                            </div>
+                        )
+                    }
+                </div>
             </div>
             <div className='sm:w-[35%] w-[78%] flex justify-between items-center mt-4'>
                 <button
@@ -148,8 +146,6 @@ const ImageEdit = () => {
             <ModalBox 
                 open={open} 
                 onClose={handleClose}
-                settingHeight={dimensions.height}
-                settingWidth={dimensions.width}
                 setGrayscale={setGrayscale}
                 grayscale={grayscale}
                 setBlur={setBlur}

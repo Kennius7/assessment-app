@@ -1,5 +1,5 @@
+"use client";
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from "next/image";
 import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
@@ -32,7 +32,6 @@ const ImageGallery = () => {
         } else return 1;
     };
 
-    // const currentPage = Number(searchParams.get("page")) || 1;
     const [page, setPage] = useState(getStoredPage());
 
     useEffect(() => {
@@ -42,12 +41,27 @@ const ImageGallery = () => {
     }, [page]);
 
     const [totalPages, setTotalPages] = useState(10);
-    const [imagesPerPage, setImagesPerPage] = useState(8);
+    const [imagesPerPage, setImagesPerPage] = useState(10);
     useEffect(() => {
         if (typeof window !== "undefined") {
-            setImagesPerPage(window.innerWidth > 500 ? 9 : 8);
+            setImagesPerPage(window.innerWidth > 500 ? 12 : 8);
+            console.log("Images per page:>>>>>>", imagesPerPage);
         }
-    }, []);
+    });
+
+    useEffect(() => {
+        const getAllImages = async () => {
+            console.log("Fetching images...");
+            try {
+                const res = await axios.get(`https://picsum.photos/v2/list?limit=500`);
+                const numberOfImages = res.data.length;
+                setTotalPages(Math.ceil(numberOfImages / imagesPerPage));
+            } catch (error) {
+                console.error("Error:>>>>>", error);
+            }
+        }
+        getAllImages();
+    }, [])
 
 
     const fetchImages = async (pageNumber: number) => {
@@ -74,7 +88,6 @@ const ImageGallery = () => {
 
 
 
-
     return (
         <div className="w-full">
             {
@@ -93,7 +106,7 @@ const ImageGallery = () => {
                                 color="primary"
                             />
                         </Box>
-                        <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
+                        <div className="grid sm:grid-cols-4 grid-cols-2 sm:gap-6 gap-2">
                             {
                                 images.length > 0 &&
                                     images.map(({ id, download_url, author }) => (
@@ -111,7 +124,7 @@ const ImageGallery = () => {
                                                             height={300}
                                                             // priority={visibleImages.has(Number(id))}
                                                             className="rounded-[7px] shadow-md object-cover 
-                                                            w-full sm:h-[300px] h-[140px]" 
+                                                            w-full sm:h-[280px] h-[140px]" 
                                                         />
                                                 </Link>
                                                 <div className="sm:text-[16px] text-[14px] mt-1 italic">
