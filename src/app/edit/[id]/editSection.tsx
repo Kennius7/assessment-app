@@ -23,7 +23,7 @@ export default function ImageEditor({
         scale: number,
         setAngle: (value: number) => void,
         angle: number,
-        canvasRef: React.RefObject<HTMLCanvasElement> | null,
+        canvasRef: React.RefObject<HTMLCanvasElement | null>,
     }) {
 
     // const canvasRef = useRef<HTMLCanvasElement | null>(null);
