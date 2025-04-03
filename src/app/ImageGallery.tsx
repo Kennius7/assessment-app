@@ -40,29 +40,16 @@ const ImageGallery = () => {
         }
     }, [page]);
 
-    const [totalPages, setTotalPages] = useState(10);
+    const [totalPages, setTotalPages] = useState(125);
     const [imagesPerPage, setImagesPerPage] = useState(10);
+
     useEffect(() => {
         if (typeof window !== "undefined") {
             setImagesPerPage(window.innerWidth > 500 ? 12 : 8);
+            setTotalPages(window.innerWidth > 500 ? 83 : 125);
             console.log("Images per page:>>>>>>", imagesPerPage);
         }
-    });
-
-    useEffect(() => {
-        const getAllImages = async () => {
-            console.log("Fetching images...");
-            try {
-                const res = await axios.get(`https://picsum.photos/v2/list?limit=500`);
-                const numberOfImages = res.data.length;
-                setTotalPages(Math.ceil(numberOfImages / imagesPerPage));
-            } catch (error) {
-                console.error("Error:>>>>>", error);
-            }
-        }
-        getAllImages();
-    }, [])
-
+    }, []);
 
     const fetchImages = async (pageNumber: number) => {
         setIsClient(true);
