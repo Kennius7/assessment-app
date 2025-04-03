@@ -1,13 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
 
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Typography, Box, Button, Modal } from '@mui/material';
 import EditSection from "../edit/[id]/editSection";
+import { ParamValue } from 'next/dist/server/request/params';
 
 
 
 
 const ModalBox = ({ 
     open, onClose, modalWidth, settingHeight, settingWidth, setGrayscale, grayscale, 
-    setBlur, blur, setDimensions, dimensions, handleEditedImageDownload
+    setBlur, blur, setDimensions, dimensions, image, id,
 }: {
     open: boolean,
     onClose: () => void,
@@ -20,10 +24,82 @@ const ModalBox = ({
     grayscale: boolean,
     setBlur: (value: number) => void, 
     blur: number,
-    handleEditedImageDownload: () => void,
+    image: HTMLImageElement | null,
+    id: ParamValue | string,
 }) => {
 
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [scale, setScale] = useState(1);
+    const [angle, setAngle] = useState(0);
+    const [mouseStart, setMouseStart] = useState({ x: 0, y: 0 });
 
+
+    useEffect(() => {
+        if (!image || !canvasRef.current) return;
+
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        canvas.width = 500;
+        canvas.height = 300;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(position.x + image.width / 2, position.y + image.height / 2);
+        ctx.rotate(angle * (Math.PI / 180));
+        ctx.scale(scale, scale);
+        ctx.drawImage(image, -image.width / 2, -image.height / 2);
+        ctx.restore();
+    }, [image, position, scale, angle]);
+
+    const handleEditedImageDownload = () => {
+        if (!canvasRef.current) {
+            console.error("Canvas reference is missing!");
+            return;
+        }
+        // console.log("Stage Ref:>>>>>>", canvasRef.current);
+        // canvasRef.current.draw();
+        setTimeout(() => {
+            const dataURL = canvasRef?.current?.toDataURL();
+            // console.log("Data URL:>>>>", dataURL);
+            const link = document.createElement("a");
+            if (link !== undefined) {
+                link?.href = dataURL;
+            };
+            link.download = `edited-image${id}.jpg`;
+            link.click();
+        }, 500);
+    };
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        setIsDragging(true);
+        setMouseStart({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (!isDragging) return;
+
+        setPosition(prev => ({
+            x: prev.x + (e.clientX - mouseStart.x),
+            y: prev.y + (e.clientY - mouseStart.y),
+        }));
+        setMouseStart({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setScale(parseFloat(event.target.value));
+    };
+
+    const handleRotateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAngle(parseFloat(event.target.value));
+    };
 
     const modalStyle = {
         position: "absolute",
@@ -63,33 +139,16 @@ const ModalBox = ({
                         margin: 1,
                     }}
                 >
-                    {/* <Stage 
-                        ref={stageRef} 
-                        width={dimensions.width} 
-                        height={dimensions.height} 
-                    >
-                        <Layer>
-                            {image && (
-                                <>
-                                    <KonvaImage
-                                        ref={imageRef}
-                                        image={image}
-                                        draggable
-                                        onTransformEnd={handleTransformEnd}
-                                        onClick={() => setSelected(!selected)}
-                                        onTap={() => setSelected(!selected)}
-                                        onDragMove={handleDragMove}
-                                        onDragEnd={handleDragEnd}
-                                        x={imagePosition.x} 
-                                        y={imagePosition.y}
-                                        width={dimensions.width}
-                                        height={dimensions.height}
-                                    />
-                                    { selected && <Transformer borderEnabled={true} ref={transformerRef} /> }
-                                </>
-                            )}
-                        </Layer>
-                    </Stage> */}
+                    <div>
+                        <canvas 
+                            ref={canvasRef}
+                            onMouseDown={handleMouseDown}
+                            onMouseMove={handleMouseMove}
+                            onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseUp}
+                            className="border cursor-pointer"
+                        />
+                    </div>
                     <EditSection 
                         settingHeight={settingHeight} 
                         settingWidth={settingWidth} 

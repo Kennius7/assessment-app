@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Switch } from '@mui/material';
+import { Switch, Box } from '@mui/material';
 
 
 export default function ImageEditor({
@@ -86,6 +86,21 @@ export default function ImageEditor({
                     className="border px-2 py-1 w-16 rounded-md"
                 />
             </div>
+            <Box className="flex flex-col items-center gap-2 w-full">
+                <label className="text-gray-600">Scale: {scale.toFixed(2)}</label>
+                <input 
+                    type="range" min="0.5" max="2" step="0.1" 
+                    value={scale} onChange={handleScaleChange} 
+                    className="w-full"
+                />
+
+                <label className="text-gray-600">Rotate: {angle}°</label>
+                <input 
+                    type="range" min="0" max="360" step="1" 
+                    value={angle} onChange={handleRotateChange} 
+                    className="w-full"
+                />
+            </Box>
         </div>
     );
 }

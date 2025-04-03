@@ -9,11 +9,11 @@ const Home: React.FC = () => {
 
   return (
     <div className='w-full flex flex-col items-center'>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Image Management
+      <Typography variant="h4" component="h1" mt={2} gutterBottom>
+        Gallery
       </Typography>
 
-      <div className='w-full p-4'>
+      <div className='w-full sm:p-4 p-2'>
         <Suspense fallback={<CircularProgress/>}>
           <ImageGallery />
         </Suspense>

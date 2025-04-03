@@ -5,7 +5,8 @@ import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
 import { CircularProgress, Box, Pagination } from '@mui/material';
 import Link from "next/link";
-import { useRouter, useSearchParams } from 'next/navigation';;
+import { useRouter, useSearchParams } from 'next/navigation';
+import useImagesAboveFold from "./hook/useIsAboveFold";
 
 
 interface ImageData {
@@ -21,8 +22,8 @@ const ImageGallery = () => {
     const [isClient, setIsClient] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { imageRefs, visibleImages } = useImagesAboveFold(images.length);
 
-    
     const getStoredPage = () => {
         if (typeof window !== "undefined") {
             const urlPage = Number(searchParams.get("page"));
@@ -71,6 +72,9 @@ const ImageGallery = () => {
 
     if (!isClient) { return null }
 
+
+
+
     return (
         <div className="w-full">
             {
@@ -89,20 +93,25 @@ const ImageGallery = () => {
                                 color="primary"
                             />
                         </Box>
-                        <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-3">
+                        <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
                             {
                                 images.length > 0 &&
                                     images.map(({id, download_url, author}) => (
-                                        <Suspense key={id} fallback={<CircularProgress size={"2rem"} />}>
+                                        <Suspense 
+                                            key={id}
+                                            fallback={<CircularProgress size={"2rem"} />}
+                                        >
                                             <div className="cursor-pointer">
                                                 <Link href={`/edit/${id}`} passHref>
                                                         <Image 
+                                                            ref={(el) => (imageRefs.current[Number(id)] = el)}
                                                             src={download_url} 
                                                             alt={`Image ${author}`} 
                                                             width={400}
                                                             height={300}
+                                                            priority={visibleImages.has(Number(id))}
                                                             className="rounded-[7px] shadow-md object-cover 
-                                                            sm:w-[500px] sm:h-[300px] w-[150px] h-[120px]" 
+                                                            w-full sm:h-[300px] h-[140px]" 
                                                         />
                                                 </Link>
                                                 <div className="sm:text-[16px] text-[14px] mt-1 italic">
