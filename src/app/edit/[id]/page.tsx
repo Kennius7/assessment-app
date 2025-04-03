@@ -2,8 +2,6 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from "next/navigation";
 import { useRouter } from 'next/navigation';;
@@ -28,7 +26,7 @@ const ImageEdit = () => {
     const [angle, setAngle] = useState(0);
     const [mouseStart, setMouseStart] = useState({ x: 0, y: 0 });
 
-    const stageRef = useRef<any>(null);
+    // const stageRef = useRef<any>(null);
     const [open, setOpen] = useState(false);
     const [modalWidth, setModalWidth] = useState(0);
     const [grayscale, setGrayscale] = useState(false);
@@ -37,7 +35,7 @@ const ImageEdit = () => {
     useEffect(() => {
         if (typeof window !== "undefined") {
             setModalWidth(window.innerWidth > 500 ? (dimensions.width * 2) : (dimensions.width * 1.4));
-            setDimensions({ width: window.innerWidth > 500 ? 500 : 300, height: window.innerWidth > 500 ? 300 : 200 });
+            setDimensions({ width: window.innerWidth > 500 ? 500 : 280, height: window.innerWidth > 500 ? 300 : 180 });
         }
     }, [])
 

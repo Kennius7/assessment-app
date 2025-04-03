@@ -41,17 +41,17 @@ export default function ImageEditor({
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        canvas.width = 500;
-        canvas.height = 300;
+        canvas.width = dimensions.width;
+        canvas.height = dimensions.height;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
         ctx.translate(position.x + image.width / 2, position.y + image.height / 2);
         ctx.rotate(angle * (Math.PI / 180));
         ctx.scale(scale, scale);
-        ctx.drawImage(image, -image.width / 2, -image.height / 2);
+        // ctx.drawImage(image, -image.width / 2, -image.height / 2);
         ctx.restore();
-    }, [image, position, scale, angle, canvasRef]);
+    }, [image, position, scale, angle, canvasRef, dimensions.width, dimensions.height]);
 
     const handleGrayscaleToggle = () => {
         setGrayscale(!grayscale);
@@ -80,20 +80,25 @@ export default function ImageEditor({
 
     return (
         <div 
-            style={{ height: settingHeight, width: window.innerWidth > 500 ? settingWidth/2 : "98%" }} 
+            style={{ 
+                height: window.innerWidth > 500 ? settingHeight : "280px", 
+                width: window.innerWidth > 500 ? settingWidth/2 : "98%",
+            }} 
             className="flex flex-col items-center sm:p-4 p-3 bg-gray-100 rounded-lg shadow-lg sm:m-2 m-1"
         >
-            <h2 className="text-xl font-bold mb-4">
-                Edit Settings:
+            <h2 className="sm:text-xl text-[16px] font-bold sm:mb-4 mb-2">
+                Image Settings
             </h2>
-            <div className="w-full sm:mb-4 mb-1 flex justify-between items-center">
+            <div className="w-full sm:mb-4 mb-0 flex justify-between items-center">
                 <label className="text-sm font-semibold">
                     Grayscale
                 </label>
                 <Switch checked={grayscale} onChange={handleGrayscaleToggle} />
             </div>
-            <div className="sm:mb-4 mb-1 w-full">
-                <label className="block text-sm font-semibold mb-2">Blur: {blur}</label>
+            <div className="sm:mb-4 mb-0 w-full">
+                <label className="block text-sm font-semibold mb-2">
+                    Blur: {blur}
+                </label>
                 <input 
                     type="range" 
                     min="0" 
@@ -103,7 +108,7 @@ export default function ImageEditor({
                     className="w-full"
                 />
             </div>
-            <div className='w-full flex justify-between items-center mb-2'>
+            <div className='w-full flex justify-between items-center sm:mb-2 mb-1'>
                 <label className="block text-sm font-semibold">
                     Width:
                 </label>
@@ -126,7 +131,7 @@ export default function ImageEditor({
                 />
             </div>
             <div className='w-full'>
-                <label className="text-gray-600">
+                <label className="block text-sm font-semibold sm:mb-2 mb-0">
                     Scale: {scale.toFixed(2)}
                 </label>
                 <input 
@@ -136,16 +141,15 @@ export default function ImageEditor({
                 />
             </div>
             <div className='w-full'>
-                <label className="text-gray-600">Rotate: {angle}°</label>
+                <label className="block text-sm font-semibold sm:mb-2 mb-0">
+                    Rotate: {angle}°
+                </label>
                 <input 
                     type="range" min="0" max="360" step="1" 
                     value={angle} onChange={handleRotateChange} 
                     className="w-full"
                 />
             </div>
-            {/* <Box className="flex flex-col items-center gap-2 w-full">
-
-            </Box> */}
         </div>
     );
 }
