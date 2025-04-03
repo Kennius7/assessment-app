@@ -26,9 +26,11 @@ const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDi
     const [angle, setAngle] = useState(0);
     const mouseStartRef = useRef({ x: 0, y: 0 });
 
-
-    useEffect(() => {
-        if (!image || !canvasRef.current) return;
+    const drawCanvas = () => {
+        if (!image || !canvasRef.current) {
+            console.log("Image or canvas not loaded yet...");
+            return;
+        }
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -43,8 +45,38 @@ const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDi
         ctx.rotate((angle * Math.PI) / 180);
         ctx.scale(scale, scale);
         ctx.drawImage(image, -image.width / 2, -image.height / 2);
-        ctx.restore(); 
-    }, [image, position, scale, angle, dimensions.width, dimensions.height]);
+        ctx.restore();
+        console.log("canvas drawn...");
+    }
+
+
+    useEffect(() => {
+        console.log("useEffect called...");
+        const timeout = setTimeout(() => {
+            if (!image || !canvasRef.current) {
+                console.log("Image or canvas not loaded yet on the useEffect...");
+                return;
+            }
+    
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                console.log("Canvas context not loaded yet on the useEffect...");
+                return;
+            }
+        
+            // Ensure image is fully loaded before drawing
+            if (!image.complete) {
+                image.onload = () => drawCanvas();
+                console.log("Canvas drawn on the useEffect...");
+                return;
+            }
+    
+            drawCanvas();
+        }, 100);
+
+        return () => clearTimeout(timeout);
+    });
 
     const handleEditedImageDownload = () => {
         if (!canvasRef.current) {
@@ -233,11 +265,3 @@ const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDi
 }
 
 export default ModalBox;
-
-
-
-
-
-
-
-
