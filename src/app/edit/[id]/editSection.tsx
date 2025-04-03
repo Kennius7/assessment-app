@@ -23,13 +23,9 @@ export default function ImageEditor({
         canvasRef: React.RefObject<HTMLCanvasElement | null>,
     }) {
 
-    // const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    // const [isDragging, setIsDragging] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
-    // const [width, setWidth] = useState(300);
-    // const [height, setHeight] = useState(200);
-    // const [scale, setScale] = useState(1);
-    // const [angle, setAngle] = useState(0);
+    const [width, setWidth] = useState(300);
+    const [height, setHeight] = useState(200);
 
     useEffect(() => {
         if (!image || !canvasRef?.current) return;
@@ -58,12 +54,18 @@ export default function ImageEditor({
         setBlur(Number(e.target.value));
     };
 
-    const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDimensions({ ...dimensions, width: Number(e.target.value) });
-    };
+    const handleDimensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = Number(e.target.value);
+        const name = e.target.name;
 
-    const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDimensions({ ...dimensions, height: Number(e.target.value) });
+        if (!isNaN(newValue) && newValue > 0) {
+            if (name === "width") {
+                setWidth(newValue);
+            } else if (name === "height") {
+                setHeight(newValue);
+            }
+            setDimensions({ ...dimensions, [name]: newValue });
+        }
     };
 
     const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,9 +109,10 @@ export default function ImageEditor({
                     Width:
                 </label>
                 <input 
+                    name="width"
                     type="number" 
-                    value={dimensions.width} 
-                    onChange={handleWidthChange}
+                    value={width}
+                    onChange={handleDimensionChange}
                     className="border px-2 py-1 sm:w-16 w-10 rounded-md text-[12px]"
                 />
             </div>
@@ -118,9 +121,10 @@ export default function ImageEditor({
                     Height:
                 </label>
                 <input 
+                    name="height"
                     type="number" 
-                    value={dimensions.height} 
-                    onChange={handleHeightChange}
+                    value={height} 
+                    onChange={handleDimensionChange}
                     className="border px-2 py-1 sm:w-16 w-10 rounded-md text-[12px]"
                 />
             </div>

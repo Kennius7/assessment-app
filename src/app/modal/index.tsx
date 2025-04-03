@@ -65,7 +65,6 @@ const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDi
                 return;
             }
         
-            // Ensure image is fully loaded before drawing
             if (!image.complete) {
                 image.onload = () => drawCanvas();
                 console.log("Canvas drawn on the useEffect...");
@@ -94,64 +93,9 @@ const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDi
         }, 500);    
     };
 
-
-    //?============================================================================================>>
-
-    // const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    //     setIsDragging(true);
-    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
-    //     document.addEventListener("mousemove", handleGlobalMouseMove);
-    //     document.addEventListener("mouseup", handleGlobalMouseUp);
-    // };
-
-    // const handleGlobalMouseDown = (e: MouseEvent) => {
-    //     setIsDragging(true);
-    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
-    //     document.addEventListener("mousemove", handleMouseMove);
-    //     document.addEventListener("mouseup", handleMouseUp);
-    // };
-
-    // const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-    //     if (!isDragging) return;
-        
-    //     setPosition(prev => ({
-    //         x: prev.x + (mouseStartRef.current.x - e.clientX),
-    //         y: prev.y + (mouseStartRef.current.y - e.clientY),
-    //     }));
-    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
-    //     console.log("Position:>>>>", position);
-    // };
-
-    // const handleGlobalMouseMove = (e: MouseEvent) => {
-    //     if (!isDragging) return;
-        
-    //     setPosition(prev => ({
-    //         x: prev.x + (mouseStartRef.current.x - e.clientX),
-    //         y: prev.y + (mouseStartRef.current.y - e.clientY),
-    //     }));
-    //     mouseStartRef.current = { x: e.clientX, y: e.clientY };
-    //     console.log("Position:>>>>", position);
-    // };
-
-    // const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => { 
-    //     setIsDragging(false);
-    //     document.removeEventListener("mousemove", handleMouseMove);
-    //     document.removeEventListener("mouseup", handleMouseUp);
-    // };
-
-    // const handleGlobalMouseUp = () => { 
-    //     setIsDragging(false);
-    //     document.removeEventListener("mousemove", handleGlobalMouseMove);
-    //     document.removeEventListener("mouseup", handleGlobalMouseUp);
-    // };
-
-    //?============================================================================================>>
-
     const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
         setIsDragging(true);
         mouseStartRef.current = { x: e.clientX, y: e.clientY };
-        // document.addEventListener("mousemove", handleMouseMove);
-        // document.addEventListener("mouseup", handleMouseUp);
     };
 
     const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
@@ -165,13 +109,7 @@ const ModalBox = ({ open, onClose, setGrayscale, grayscale, setBlur, blur, setDi
         console.log("Position:>>>>", position);
     };
 
-    const handleMouseUp = () => { 
-        setIsDragging(false);
-        // document.removeEventListener("mousemove", handleMouseMove);
-        // document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-
+    const handleMouseUp = () => setIsDragging(false);
 
     //?============================================================================================>>
 
