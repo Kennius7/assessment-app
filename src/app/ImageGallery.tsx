@@ -6,7 +6,7 @@ import axios from "axios";
 import { CircularProgress, Box, Pagination } from '@mui/material';
 import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation';
-import useImagesAboveFold from "./hook/useIsAboveFold";
+// import useImagesAboveFold from "./hook/useIsAboveFold";
 
 
 interface ImageData {
@@ -22,7 +22,7 @@ const ImageGallery = () => {
     const [isClient, setIsClient] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { imageRefs, visibleImages } = useImagesAboveFold(images.length);
+    // const { imageRefs, visibleImages } = useImagesAboveFold(images.length);
 
     const getStoredPage = () => {
         if (typeof window !== "undefined") {
@@ -96,7 +96,7 @@ const ImageGallery = () => {
                         <div className="grid sm:grid-cols-3 grid-cols-2 sm:gap-4 gap-2">
                             {
                                 images.length > 0 &&
-                                    images.map(({id, download_url, author}) => (
+                                    images.map(({ id, download_url, author }) => (
                                         <Suspense 
                                             key={id}
                                             fallback={<CircularProgress size={"2rem"} />}
@@ -104,12 +104,12 @@ const ImageGallery = () => {
                                             <div className="cursor-pointer">
                                                 <Link href={`/edit/${id}`} passHref>
                                                         <Image 
-                                                            ref={(el) => (imageRefs.current[Number(id)] = el)}
+                                                            // ref={(el) => { if (el) { imageRefs.current[Number(id)] = el } }}
                                                             src={download_url} 
                                                             alt={`Image ${author}`} 
                                                             width={400}
                                                             height={300}
-                                                            priority={visibleImages.has(Number(id))}
+                                                            // priority={visibleImages.has(Number(id))}
                                                             className="rounded-[7px] shadow-md object-cover 
                                                             w-full sm:h-[300px] h-[140px]" 
                                                         />

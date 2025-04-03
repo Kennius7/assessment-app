@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -47,12 +46,7 @@ const ModalBox = ({
         canvas.height = 300;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(position.x + image.width / 2, position.y + image.height / 2);
-        ctx.rotate(angle * (Math.PI / 180));
-        ctx.scale(scale, scale);
         ctx.drawImage(image, -image.width / 2, -image.height / 2);
-        ctx.restore();
     }, [image, position, scale, angle]);
 
     const handleEditedImageDownload = () => {
@@ -66,12 +60,12 @@ const ModalBox = ({
             const dataURL = canvasRef?.current?.toDataURL();
             // console.log("Data URL:>>>>", dataURL);
             const link = document.createElement("a");
-            if (link !== undefined) {
-                link?.href = dataURL;
-            };
-            link.download = `edited-image${id}.jpg`;
-            link.click();
-        }, 500);
+            if (dataURL && link) {
+                link.href = dataURL;
+                link.download = `edited-image${id}.jpg`;
+                link.click();
+            }
+        }, 500);    
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -93,13 +87,13 @@ const ModalBox = ({
         setIsDragging(false);
     };
 
-    const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setScale(parseFloat(event.target.value));
-    };
+    // const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setScale(parseFloat(event.target.value));
+    // };
 
-    const handleRotateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAngle(parseFloat(event.target.value));
-    };
+    // const handleRotateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     setAngle(parseFloat(event.target.value));
+    // };
 
     const modalStyle = {
         position: "absolute",
@@ -112,7 +106,7 @@ const ModalBox = ({
         borderRadius: 2,
         boxShadow: 24,
         p: 4,
-        width: modalWidth,
+        width: window.innerWidth > 500 ? modalWidth : "98%",
         height: "80%",
         maxWidth: 800,
         display: "flex", 
@@ -133,9 +127,9 @@ const ModalBox = ({
                         width: "100%", 
                         height: "100%", 
                         display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        flexDirection: window.innerWidth > 500 ? "row" :  "column",
+                        justifyContent: window.innerWidth > 500 ? "space-between" : "center",
+                        alignItems: window.innerWidth > 500 ? "center" : "center",
                         margin: 1,
                     }}
                 >
@@ -158,6 +152,12 @@ const ModalBox = ({
                         blur={blur}
                         setDimensions={setDimensions}
                         dimensions={dimensions}
+                        image={image}
+                        scale={scale}
+                        setScale={setScale}
+                        angle={angle}
+                        setAngle={setAngle}
+                        canvasRef={canvasRef}
                     />
                 </Container>
     
